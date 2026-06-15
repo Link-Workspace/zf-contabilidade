@@ -2,6 +2,16 @@ const header = document.querySelector('[data-header]');
 const menuToggle = document.querySelector('[data-menu-toggle]');
 const menu = document.querySelector('[data-menu]');
 
+// ── Tema persistente via localStorage ─────────────────
+(function applyStoredTheme() {
+  if (localStorage.getItem('zf-theme') === 'orange') {
+    document.body.classList.add('theme-orange');
+  }
+  if (localStorage.getItem('zf-img') !== 'vector') {
+    document.body.classList.add('img-real');
+  }
+})();
+
 window.addEventListener('scroll', () => {
   header?.classList.toggle('scrolled', window.scrollY > 12);
 });
@@ -15,15 +25,15 @@ document.querySelectorAll('.main-nav a').forEach((link) => {
 });
 
 const revealEls = document.querySelectorAll('.reveal');
-const observer = new IntersectionObserver((entries) => {
+const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
     if (entry.isIntersecting) {
       entry.target.classList.add('visible');
-      observer.unobserve(entry.target);
+      revealObserver.unobserve(entry.target);
     }
   });
 }, { threshold: 0.14 });
-revealEls.forEach((el) => observer.observe(el));
+revealEls.forEach((el) => revealObserver.observe(el));
 
 const tabs = document.querySelectorAll('[data-tab]');
 const panels = document.querySelectorAll('[data-panel]');
@@ -40,6 +50,20 @@ tabs.forEach((tab) => {
 const demoLogin = document.querySelector('[data-demo-login]');
 demoLogin?.addEventListener('click', () => {
   document.querySelector('#dashboard-demo')?.scrollIntoView({ behavior: 'smooth' });
+});
+
+// ── Theme Toggle ──────────────────────────────────────
+const themeToggle = document.querySelector('[data-theme-toggle]');
+themeToggle?.addEventListener('click', () => {
+  const isOrange = document.body.classList.toggle('theme-orange');
+  localStorage.setItem('zf-theme', isOrange ? 'orange' : 'light');
+});
+
+// ── Image Toggle ──────────────────────────────────────
+const imgToggle = document.querySelector('[data-img-toggle]');
+imgToggle?.addEventListener('click', () => {
+  const isReal = document.body.classList.toggle('img-real');
+  localStorage.setItem('zf-img', isReal ? 'real' : 'vector');
 });
 
 const formButton = document.querySelector('[data-form-button]');
